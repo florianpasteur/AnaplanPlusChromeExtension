@@ -25,6 +25,7 @@
         "jquery.js",
         "datatables.min.js",
         "constants.js",
+        "module-bugfix.js",
         "module-cellcalculation.js",
         "module-colortheme.js",
         "module-formulabar.js",

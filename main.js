@@ -339,4 +339,4 @@ function readSettings() {
   });
 }
 
-readSettings();
+// readSettings();
