@@ -164,10 +164,10 @@ function handle_action(action) {
     active: true,
     currentWindow: true
   }, function (tabs) {
-    chrome.tabs.sendMessage(tabs[0].id, {
-      action: action,
-      data: configData
-    });
+    // chrome.tabs.sendMessage(tabs[0].id, {
+    //   action: action,
+    //   data: configData
+    // });
   });
 }
 
