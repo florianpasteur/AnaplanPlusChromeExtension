@@ -4,6 +4,7 @@ var gConfigData = {};
 //Initialize on opening
 applyToaster(gConfigData);
 applyPalette(gConfigData);
+applyScrollbar(gConfigData);
 applyFix();
 injectJs(chrome.runtime.getURL('injected.js'));
 
@@ -20,21 +21,25 @@ function injectJs(link) {
 function timeoutFunction() {
   if ($('.ap-gn__logo').length == 0) {
     setTimeout(timeoutFunction, 100);
-    console.log("Waiting for page to fully load...");
+    console.log("Waiting for page to be fully loaded...");
   } else {
     applyDisableLink(gConfigData.bpxLink);
     applyHideModelmap(gConfigData.bpxMap);
     applySnippet(gConfigData);
     applyToaster(gConfigData);
     applyPalette(gConfigData);
+    applyScrollbar(gConfigData);
     applyFix(gConfigData);
   }
 }
 
-$(function () { setTimeout(timeoutFunction, 100) });
+$(function () {
+  setTimeout(timeoutFunction, 100)
+});
 
 //Initialize click-dependent elements
 $(document).ready(function () {
+
   $('body').click(function (e) {
     if ($(e.target).closest('.formulaWindow .dijitDialogTitleBar .dijitButton, .formulaWindow .formulaEditorButtonsCell .dijitButton').length) {
       afterModalHidden(e);
@@ -43,13 +48,15 @@ $(document).ready(function () {
         handleHighlighter(e);
         applyGrid(gConfigData.bpxGrid);
         applyTooltip(gConfigData.bpxTooltip);
-      }, 50);
+      }, 0);
+      setTimeout(function () {
+        applyTooltip(gConfigData.bpxTooltip);
+      }, 1000);
       setTimeout(function () {
         applyTooltip(gConfigData.bpxTooltip);
       }, 2000);
     }
   });
-
   $('body').click();
 });
 
@@ -61,7 +68,7 @@ $(document).keydown(function (e) {
     setTimeout(function () {
       updateFormatting($(oldTextarea).val());
       $(oldTextarea).attr('prev_value', $(oldTextarea).val());
-    }, 100);
+    }, 0);
   }
 });
 
@@ -75,14 +82,13 @@ function afterModalHidden(e) {
       handleHighlighter(e);
       caretPositionOldToNew();
     }
-  }, 100);
+  }, 0);
 }
 
 var prevIsModal = 0;
 var curIsModal = 0;
 
 function handleHighlighter(e) {
-
   if ($('.formulaWindow').length > 0) {
     curIsModal = 1;
   } else {
@@ -103,8 +109,7 @@ function handleHighlighter(e) {
           }
         });
       }
-
-    }, 1000);
+    }, 0);
   }
   if ($(oldTextarea).length == 0) return;
   // emulate label click
@@ -115,8 +120,9 @@ function handleHighlighter(e) {
   // dismiss click on edit panel
   if ($(e.target).closest('table.formulaEditorExpressionTable').length) return;
   let curValue = $(oldTextarea).val();
-  if (initHighLighter() || curValue != gPrevValue) updateFormatting(curValue);
-
+  if (initHighLighter() || ($(e.target).data('dojo-attach-point') == "_wrapper") || curValue != gPrevValue) {
+    updateFormatting(curValue);
+  }
   toggleHighlighter(gConfigData.bpxColor || gConfigData.bpxIndent || gConfigData.bpxAutoComplete || gConfigData.bpxModuleAC || gConfigData.bpxPropAC);
   applyColor(gConfigData.bpxColor);
   applyIndent(gConfigData.bpxIndent);
@@ -241,6 +247,23 @@ chrome.extension.onMessage.addListener(
         gConfigData.bpxPalette = false;
         applyPalette(request.data);
         break;
+      case 'apply-scrollbar':
+        gConfigData.bpxScrollbar = true;
+        applyScrollbar(request.data);
+        break;
+
+      case 'disable-scrollbar':
+        gConfigData.bpxScrollbar = false;
+        applyScrollbar(request.data);
+        break;
+      case 'apply-cellcalculation':
+        gConfigData.bpxCellcalculation = true;
+        // applyCellcalculation(true);
+        break;
+      case 'disable-cellcalculation':
+        gConfigData.bpxCellcalculation = false;
+        // applyCellcalculation(false);
+        break;
       case 'style_change':
         applyPalette(request.data);
         break;
@@ -261,6 +284,7 @@ function refreshHighlighter() {
 function readSettings() {
   chrome.storage.local.get(gDefaultSetting, function (items) {
     gConfigData = items;
+    checkNotification();
   });
 }
 

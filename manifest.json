@@ -25,15 +25,17 @@
         "jquery.js",
         "datatables.min.js",
         "constants.js",
+        "module-cellcalculation.js",
+        "module-colortheme.js",
         "module-formulabar.js",
         "module-grid.js",
-        "module-toaster.js",
-        "module-bugfix.js",
-        "module-colortheme.js",
         "module-logolink.js",
         "module-modelmap.js",
-        "module-tooltip.js",
+        "module-notification.js",
+        "module-scrollbar.js",
         "module-snippet.js",
+        "module-toaster.js",
+        "module-tooltip.js",
         "main.js"
       ]
     }

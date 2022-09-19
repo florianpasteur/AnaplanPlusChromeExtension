@@ -7,6 +7,7 @@ function save_options() {
   var grid = document.getElementById('apply-grid').checked;
   var tooltip = document.getElementById('apply-tooltip').checked;
   var snippet = document.getElementById('apply-snippet').checked;
+
   var decimal_txt = document.getElementById('decimal-txt').value;
   var thousands_txt = document.getElementById('thousands-txt').value;
   var negative_txt = document.getElementById('negative-txt').value;
@@ -16,13 +17,15 @@ function save_options() {
   var link = document.getElementById('disable-link').checked;
   var toaster = document.getElementById('apply-toaster').checked;
   var palette = document.getElementById('apply-palette').checked;
-
-  var nav_back_color = document.getElementById('nav-back-color').value;
+  var scrollbar = document.getElementById('apply-scrollbar').checked;
+  var cellcalculation = document.getElementById('apply-cellcalculation').checked;
+  var nav_back_color1 = document.getElementById('nav-back-color1').value;
+  var nav_back_color2 = document.getElementById('nav-back-color2').value;
   var nav_button_color = document.getElementById('nav-button-color').value;
   var nav_btntxt_color = document.getElementById('nav-btntxt-color').value;
-  var slider_back_color = document.getElementById('slider-back-color').value;
+  var slider_back_color2 = document.getElementById('slider-back-color').value;
   var slider_txt_color = document.getElementById('slider-txt-color').value;
-  var settings_selected_color = document.getElementById('settings-selected-color').value;
+  var settings_selected_color2 = document.getElementById('settings-selected-color').value;
   var settings_hover_color = document.getElementById('settings-hover-color').value;
   var label_txt_color = document.getElementById('label-txt-color').value;
   var h1_txt_color = document.getElementById('h1-txt-color').value;
@@ -37,6 +40,9 @@ function save_options() {
   var sum1_cells_color = document.getElementById('sum1-cells-color').value;
   var sum2_cells_color = document.getElementById('sum2-cells-color').value;
   var sum3_cells_color = document.getElementById('sum3-cells-color').value;
+  var heading3_cells_color = document.getElementById('heading3-cells-color').value;
+  var sum1_col_bdr = document.getElementById('sum1-col-bdr').value;
+  var sum2_col_bdr = document.getElementById('sum2-col-bdr').value;
   var tbl_font_family = document.getElementById('tbl-font-family').value;
   var tbl_font_size = document.getElementById('tbl-font-size').value;
   var th_back_color = document.getElementById('th-back-color').value;
@@ -55,37 +61,43 @@ function save_options() {
     bpxMap: map,
     bpxToaster: toaster,
     bpxPalette: palette,
-    decimal_txt : decimal_txt,
-    thousands_txt : thousands_txt,
-    negative_txt : negative_txt,
-    zero_txt : zero_txt,
-    nav_back_color : nav_back_color,
-    nav_button_color : nav_button_color,
-    nav_btntxt_color : nav_btntxt_color,
-    slider_back_color : slider_back_color,
-    slider_txt_color : slider_txt_color,
-    settings_selected_color : settings_selected_color,
-    settings_hover_color : settings_hover_color,
-    label_txt_color : label_txt_color,
-    h1_txt_color : h1_txt_color,
-    h1_bg_color : h1_bg_color,
-    h1_txt_align : h1_txt_align,
-    h2_txt_color : h2_txt_color,
-    h2_txt_align : h2_txt_align,
-    h2_bg_color : h2_bg_color,
-    info_bg_color : info_bg_color,
-    editable_cells_color : editable_cells_color,
-    editable_txt_color : editable_txt_color,
-    sum1_cells_color : sum1_cells_color,
-    sum2_cells_color : sum2_cells_color,
-    sum3_cells_color : sum3_cells_color,
-    tbl_font_family : tbl_font_family,
-    tbl_font_size : tbl_font_size,
-    th_back_color : th_back_color,
-    th_txt_color : th_txt_color
+    bpxScrollbar: scrollbar,
+    bpxCellcalculation: cellcalculation,
+    decimal_txt: decimal_txt,
+    thousands_txt: thousands_txt,
+    negative_txt: negative_txt,
+    zero_txt: zero_txt,
+    nav_back_color1: nav_back_color1,
+    nav_back_color2: nav_back_color2,
+    nav_button_color: nav_button_color,
+    nav_btntxt_color: nav_btntxt_color,
+    slider_back_color2: slider_back_color2,
+    slider_txt_color: slider_txt_color,
+    settings_selected_color2: settings_selected_color2,
+    settings_hover_color: settings_hover_color,
+    label_txt_color: label_txt_color,
+    h1_txt_color: h1_txt_color,
+    h1_bg_color: h1_bg_color,
+    h1_txt_align: h1_txt_align,
+    h2_txt_color: h2_txt_color,
+    h2_txt_align: h2_txt_align,
+    h2_bg_color: h2_bg_color,
+    info_bg_color: info_bg_color,
+    editable_cells_color: editable_cells_color,
+    editable_txt_color: editable_txt_color,
+    sum1_cells_color: sum1_cells_color,
+    sum2_cells_color: sum2_cells_color,
+    sum3_cells_color: sum3_cells_color,
+    heading3_cells_color: heading3_cells_color,
+    sum1_col_bdr: sum1_col_bdr,
+    sum2_col_bdr: sum2_col_bdr,
+    tbl_font_family: tbl_font_family,
+    tbl_font_size: tbl_font_size,
+    th_back_color: th_back_color,
+    th_txt_color: th_txt_color
   };
 
-  chrome.storage.local.set(configData, function() {
+  chrome.storage.local.set(configData, function () {
     //
   });
 
@@ -95,7 +107,7 @@ function save_options() {
 
 function restore_options() {
   // Use default value color = 'red' and likesColor = true.
-  chrome.storage.local.get(gDefaultSetting, function(items) {
+  chrome.storage.local.get(gDefaultSetting, function (items) {
     document.getElementById('apply-color').checked = items.bpxColor;
     document.getElementById('apply-indent').checked = items.bpxIndent;
     document.getElementById('apply-autocomplete').checked = items.bpxAutoComplete;
@@ -112,12 +124,15 @@ function restore_options() {
     document.getElementById('hide-map').checked = items.bpxMap;
     document.getElementById('apply-toaster').checked = items.bpxToaster;
     document.getElementById('apply-palette').checked = items.bpxPalette;
-    document.getElementById('nav-back-color').value = items.nav_back_color;
+    document.getElementById('apply-scrollbar').checked = items.bpxScrollbar;
+    document.getElementById('apply-cellcalculation').checked = items.bpxCellcalculation;
+    document.getElementById('nav-back-color1').value = items.nav_back_color1;
+    document.getElementById('nav-back-color2').value = items.nav_back_color2;
     document.getElementById('nav-button-color').value = items.nav_button_color;
     document.getElementById('nav-btntxt-color').value = items.nav_btntxt_color;
-    document.getElementById('slider-back-color').value = items.slider_back_color;
+    document.getElementById('slider-back-color').value = items.slider_back_color2;
     document.getElementById('slider-txt-color').value = items.slider_txt_color;
-    document.getElementById('settings-selected-color').value = items.settings_selected_color;
+    document.getElementById('settings-selected-color').value = items.settings_selected_color2;
     document.getElementById('settings-hover-color').value = items.settings_hover_color;
     document.getElementById('label-txt-color').value = items.label_txt_color;
     document.getElementById('h1-txt-color').value = items.h1_txt_color;
@@ -132,6 +147,9 @@ function restore_options() {
     document.getElementById('sum1-cells-color').value = items.sum1_cells_color;
     document.getElementById('sum2-cells-color').value = items.sum2_cells_color;
     document.getElementById('sum3-cells-color').value = items.sum3_cells_color;
+    document.getElementById('heading3-cells-color').value = items.heading3_cells_color;
+    document.getElementById('sum1-col-bdr').value = items.sum1_col_bdr;
+    document.getElementById('sum2-col-bdr').value = items.sum2_col_bdr;
     document.getElementById('tbl-font-family').value = items.tbl_font_family;
     document.getElementById('tbl-font-size').value = items.tbl_font_size;
     document.getElementById('th-back-color').value = items.th_back_color;
@@ -145,94 +163,109 @@ function handle_action(action) {
   chrome.tabs.query({
     active: true,
     currentWindow: true
-  }, function(tabs) {
-      chrome.tabs.sendMessage(tabs[0].id, {
-        action: action,
-        data: configData
-      });
+  }, function (tabs) {
+    chrome.tabs.sendMessage(tabs[0].id, {
+      action: action,
+      data: configData
+    });
   });
 }
 
 function color_change() {
   var elem = document.getElementById("apply-color");
-  var action = elem.checked ? 'apply-color':'disable-color';
+  var action = elem.checked ? 'apply-color' : 'disable-color';
 
   handle_action(action);
 }
 
 function indent_change() {
   var elem = document.getElementById("apply-indent");
-  var action = elem.checked ? 'apply-indent':'disable-indent';
+  var action = elem.checked ? 'apply-indent' : 'disable-indent';
 
   handle_action(action);
 }
 
 function autocomplete_change() {
   var elem = document.getElementById("apply-autocomplete");
-  var action = elem.checked ? 'apply-autocomplete':'disable-autocomplete';
+  var action = elem.checked ? 'apply-autocomplete' : 'disable-autocomplete';
 
   handle_action(action);
 }
 
 function moduleac_change() {
   var elem = document.getElementById("apply-moduleac");
-  var action = elem.checked ? 'apply-moduleac':'disable-moduleac';
+  var action = elem.checked ? 'apply-moduleac' : 'disable-moduleac';
 
   handle_action(action);
 }
 
 function propac_change() {
   var elem = document.getElementById("apply-propac");
-  var action = elem.checked ? 'apply-propac':'disable-propac';
+  var action = elem.checked ? 'apply-propac' : 'disable-propac';
 
   handle_action(action);
 }
 
 function grid_change() {
   var elem = document.getElementById("apply-grid");
-  var action = elem.checked ? 'apply-grid':'disable-grid';
+  var action = elem.checked ? 'apply-grid' : 'disable-grid';
 
   handle_action(action);
 }
 
 function tooltip_change() {
   var elem = document.getElementById("apply-tooltip");
-  var action = elem.checked ? 'apply-tooltip':'disable-tooltip';
+  var action = elem.checked ? 'apply-tooltip' : 'disable-tooltip';
 
   handle_action(action);
 }
 
 function snippet_change() {
   var elem = document.getElementById("apply-snippet");
-  var action = elem.checked ? 'apply-snippet':'disable-snippet';
+  var action = elem.checked ? 'apply-snippet' : 'disable-snippet';
 
   handle_action(action);
 }
 
 function link_change() {
   var elem = document.getElementById("disable-link");
-  var action = elem.checked ? 'disable-link':'apply-link';
+  var action = elem.checked ? 'disable-link' : 'apply-link';
 
   handle_action(action);
 }
 
 function map_change() {
   var elem = document.getElementById("hide-map");
-  var action = elem.checked ? 'hide-map':'show-map';
+  var action = elem.checked ? 'hide-map' : 'show-map';
 
   handle_action(action);
 }
 
 function palette_change() {
   var elem = document.getElementById("apply-palette");
-  var action = elem.checked ? 'apply-palette':'disable-palette';
+  var action = elem.checked ? 'apply-palette' : 'disable-palette';
 
   handle_action(action);
 }
 
+function scrollbar_change() {
+  var elem = document.getElementById("apply-scrollbar");
+  var action = elem.checked ? 'apply-scrollbar' : 'disable-scrollbar';
+
+  handle_action(action);
+}
+
+function cellcalculation_change() {
+  var elem = document.getElementById("apply-cellcalculation");
+  var action = elem.checked ? 'apply-cellcalculation' : 'disable-cellcalculation';
+
+  handle_action(action);
+}
+
+
 function toaster_change() {
   var elem = document.getElementById("apply-toaster");
-  var action = elem.checked ? 'apply-toaster':'disable-toaster';
+  var action = elem.checked ? 'apply-toaster' : 'disable-toaster';
 
   handle_action(action);
 }
@@ -263,7 +296,7 @@ function toggle_format_panel() {
   }
 }
 
-document.addEventListener('DOMContentLoaded', function(){
+document.addEventListener('DOMContentLoaded', function () {
   restore_options();
   document.getElementById('apply-color').addEventListener('change', color_change);
   document.getElementById('apply-indent').addEventListener('change', indent_change);
@@ -282,8 +315,11 @@ document.addEventListener('DOMContentLoaded', function(){
   document.getElementById('hide-map').addEventListener('change', map_change);
   document.getElementById('apply-toaster').addEventListener('change', toaster_change);
   document.getElementById('apply-palette').addEventListener('change', palette_change);
+  document.getElementById('apply-scrollbar').addEventListener('change', scrollbar_change);
+  document.getElementById('apply-cellcalculation').addEventListener('change', cellcalculation_change);
   document.getElementById('btn-style-collapsible').addEventListener('click', toggle_color_panel);
-  document.getElementById('nav-back-color').addEventListener('change', style_change);
+  document.getElementById('nav-back-color1').addEventListener('change', style_change);
+  document.getElementById('nav-back-color2').addEventListener('change', style_change);
   document.getElementById('nav-button-color').addEventListener('change', style_change);
   document.getElementById('nav-btntxt-color').addEventListener('change', style_change);
   document.getElementById('slider-back-color').addEventListener('change', style_change);
@@ -303,6 +339,9 @@ document.addEventListener('DOMContentLoaded', function(){
   document.getElementById('sum1-cells-color').addEventListener('change', style_change);
   document.getElementById('sum2-cells-color').addEventListener('change', style_change);
   document.getElementById('sum3-cells-color').addEventListener('change', style_change);
+  document.getElementById('heading3-cells-color').addEventListener('change', style_change);
+  document.getElementById('sum1-col-bdr').addEventListener('change', style_change);
+  document.getElementById('sum2-col-bdr').addEventListener('change', style_change);
   document.getElementById('tbl-font-family').addEventListener('change', style_change);
   document.getElementById('tbl-font-size').addEventListener('change', style_change);
   document.getElementById('th-back-color').addEventListener('change', style_change);

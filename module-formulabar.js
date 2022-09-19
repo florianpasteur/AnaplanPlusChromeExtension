@@ -9,7 +9,8 @@ function getIndicesOf(searchStr, str, caseSensitive) {
   if (searchStrLen == 0) {
     return [];
   }
-  var startIndex = 0, index, indices = [];
+  var startIndex = 0,
+    index, indices = [];
   if (!caseSensitive) {
     str = str.toLowerCase();
     searchStr = searchStr.toLowerCase();
@@ -47,7 +48,10 @@ function getSelectionCharacterOffsetWithin(element) {
     preCaretTextRange.setEndPoint("EndToEnd", textRange);
     end = preCaretTextRange.text.length;
   }
-  return { start: start, end: end };
+  return {
+    start: start,
+    end: end
+  };
 }
 
 function getTextNodesIn(node) {
@@ -69,12 +73,13 @@ function setSelectionRange(el, start, end) {
     range.selectNodeContents(el);
     var textNodes = getTextNodesIn(el);
     var foundStart = false;
-    var charCount = 0, endCharCount;
+    var charCount = 0,
+      endCharCount;
 
     for (var i = 0, textNode; textNode = textNodes[i++];) {
       endCharCount = charCount + textNode.length;
-      if (!foundStart && start >= charCount
-        && (start < endCharCount ||
+      if (!foundStart && start >= charCount &&
+        (start < endCharCount ||
           (start == endCharCount && i <= textNodes.length))) {
         range.setStart(textNode, start - charCount);
         foundStart = true;
@@ -173,10 +178,17 @@ function formatText(srcStr) {
         let lastMatch = matches[matches.length - 1];
         let pos = subStr.lastIndexOf(lastMatch);
 
-        highlights[pos] = { type: "func", len: lastMatch.length };
+        highlights[pos] = {
+          type: "func",
+          len: lastMatch.length
+        };
       }
 
-      highlights[i] = { depth: totalParDepth, type: "open", len: 1 };
+      highlights[i] = {
+        depth: totalParDepth,
+        type: "open",
+        len: 1
+      };
       totalParDepth++;
     } else if (srcStr[i] == ')') {
       if (parFuncDepth > 0) {
@@ -184,31 +196,66 @@ function formatText(srcStr) {
       }
 
       totalParDepth--;
-      highlights[i] = { depth: totalParDepth, type: "close", len: 1 };
+      highlights[i] = {
+        depth: totalParDepth,
+        type: "close",
+        len: 1
+      };
     } else if (srcStr[i] == '[') {
       if (i > 0 && isLetter(srcStr[i + 1])) {
-        highlights[i] = { depth: braFuncDepth, type: "braopen", len: 1 };
-        highlights[i + 1] = { type: "braContentStart", count: 1 };
+        highlights[i] = {
+          depth: braFuncDepth,
+          type: "braopen",
+          len: 1
+        };
+        highlights[i + 1] = {
+          type: "braContentStart",
+          count: 1
+        };
         braFuncDepth++;
       }
     } else if (srcStr[i] == ']') {
-      highlights[i - 1] = { type: "braContentEnd", count: 1 };
-      highlights[i] = { depth: braFuncDepth, type: "braclose", len: 1 };
+      highlights[i - 1] = {
+        type: "braContentEnd",
+        count: 1
+      };
+      highlights[i] = {
+        depth: braFuncDepth,
+        type: "braclose",
+        len: 1
+      };
       braFuncDepth--;
     } else if (ifIndices.indexOf(i) >= 0) {
       let charLen = 2;
       if ((i == 0 || !isLetter(srcStr[i - 1])) && (i == srcStrLen - charLen || !isLetter(srcStr[i + charLen]))) {
-        highlights[i] = { type: "ite", len: charLen + 1, depth: curIteDepth };
-        highlights[i + charLen - 1] = { type: "indentStart", count: 1 };
+        highlights[i] = {
+          type: "ite",
+          len: charLen + 1,
+          depth: curIteDepth
+        };
+        highlights[i + charLen - 1] = {
+          type: "indentStart",
+          count: 1
+        };
       }
 
       i += charLen; // for perfomance skip next charLen characters
     } else if (thenIndices.indexOf(i) >= 0) {
       let charLen = 4;
       if ((i == 0 || !isLetter(srcStr[i - 1])) && (i == srcStrLen - charLen || !isLetter(srcStr[i + charLen]))) {
-        highlights[i - 1] = { type: "indentEnd", count: 1 }; // add indent end tag for if
-        highlights[i] = { type: "ite", len: charLen + 1, depth: curIteDepth }; // add highlight for then
-        highlights[i + charLen - 1] = { type: "indentStart", count: 1 }; // add indent open tag for then
+        highlights[i - 1] = {
+          type: "indentEnd",
+          count: 1
+        }; // add indent end tag for if
+        highlights[i] = {
+          type: "ite",
+          len: charLen + 1,
+          depth: curIteDepth
+        }; // add highlight for then
+        highlights[i + charLen - 1] = {
+          type: "indentStart",
+          count: 1
+        }; // add indent open tag for then
         curIteDepth++; // curIteDepth increase
         thenStack.push(curIteDepth); // add current depth to thenStack
       }
@@ -219,11 +266,21 @@ function formatText(srcStr) {
       if ((i == 0 || !isLetter(srcStr[i - 1])) && (i == srcStrLen - charLen || !isLetter(srcStr[i + charLen]))) {
         if (thenStack.length > 0) { // validation
           let thenDepth = thenStack.pop(); // pop last then from thenStack
-          highlights[i - 1] = { type: "indentEnd", count: curIteDepth - thenDepth + 1 }; // add indent end tag as much as indent different
+          highlights[i - 1] = {
+            type: "indentEnd",
+            count: curIteDepth - thenDepth + 1
+          }; // add indent end tag as much as indent different
           curIteDepth = thenDepth;
 
-          highlights[i] = { type: "ite", len: charLen + 1, depth: curIteDepth - 1 }; // add highlight for then
-          highlights[i + charLen - 1] = { type: "indentStart", count: 1 }; // add indent start tag for else
+          highlights[i] = {
+            type: "ite",
+            len: charLen + 1,
+            depth: curIteDepth - 1
+          }; // add highlight for then
+          highlights[i + charLen - 1] = {
+            type: "indentStart",
+            count: 1
+          }; // add indent start tag for else
         }
       }
       i += charLen; // for perfomance skip next charLen characters
@@ -306,7 +363,10 @@ function logicMathHandler(srcStr, i, indiceArr) {
       if (indiceArr[type_key][op_key].indexOf(i) >= 0) {
         let charLen = logicMathOperators[type_key][op_key];
         if ((i == 0 || !isLetter(srcStr[i - 1])) && (i == srcStrLen - charLen || !isLetter(srcStr[i + charLen]))) {
-          return { type: type_key, len: charLen };
+          return {
+            type: type_key,
+            len: charLen
+          };
         }
       }
     }
@@ -320,7 +380,6 @@ function updateFormatting(srcStr) {
     srcStr += ' ';
   }
   let destStr = formatText(srcStr);
-
   $(newTextarea).html(destStr);
   $(oldTextarea).val($(newTextarea).text().trim());
 }
@@ -430,6 +489,7 @@ function caretPositionOldToNew() {
 
 //////// FORMULA COLOR & EVENT HANDLER FUNCTIONS //////
 var acdata;
+
 function initHighLighter() {
   // if already exists dismiss it
   if ($(newTextarea).length) return false;
@@ -445,7 +505,7 @@ function initHighLighter() {
   $(oldTextarea).before('<code class="formated_text" id="formated_text" style="font-family:Helvetica" contenteditable="true"></code>');
   $(oldTextarea).before("<style id='bpx-main-style'>" +
     ".original .formulaEditorExpressionTable{table-layout: fixed;} " +
-    newTextarea + "{overflow: auto;display:none; font-size: 12px; min-width:40px; min-height:20px; display:block; width:100%; height:100%; box-sizing: border-box;border: 1px solid #ccc!important; padding: 9px; white-space: pre-wrap;}" +
+    newTextarea + "{position:absolute; overflow: auto; font-size: 12px; min-width:40px; min-height:300px; display:block; width: calc(100% - 30px); height:100% !important; box-sizing: border-box;border: 1px solid #ccc!important; padding: 9px; white-space: pre-wrap;}" +
     "</style>");
   $(oldTextarea).before("<style id='bpx-color-style' disabled>.bpx-bracket-wrong {color: " + bpx_bracket_wrong + ";} .bpx-bracket-0 {color: " + bpx_bracket_0 + ";} .bpx-bracket-1 {color: " + bpx_bracket_1 + ";} .bpx-bracket-2 {color: " + bpx_bracket_2 + ";} .bpx-bracket-3 {color: " + bpx_bracket_3 + ";} .bpx-bracket-4 {color: " + bpx_bracket_4 + ";}" +
     " .bpx-ite-0 {color: " + bpx_ite_0 + ";} .bpx-ite-1 {color: " + bpx_ite_1 + ";} .bpx-ite-2 {color: " + bpx_ite_2 + ";} .bpx-ite-3 {color: " + bpx_ite_3 + ";} .bpx-ite-4 {color: " + bpx_ite_4 + ";} .bpx-func {color: " + bpx_func + ";} .bpx-brafunc{color: " + bpx_brafunc + "; font-weight: bold;} .bpx-brafunc, .bpx-bracket, .bpx-ite, .bpx-func, .bpx-braopen, .bpx-braclose{font-weight:bold;} .bpx-braContentStart{color: " + bpx_braContentStart + ";font-weight: bold;} .bpx-logic{font-weight:bold; color:" + bpx_logic + ";} .bpx-math{font-weight:bold; color:" + bpx_math + ";} .bpx-syntax{font-weight:bold; color:" + bpx_syntax + ";}</style>");
@@ -519,10 +579,10 @@ function initHighLighter() {
       }
       if (val || flList) {
         var count = 0;
+
         function waitForAcData() {
           if ((gConfigData.bpxModuleAC || gConfigData.bpxPropAC) && !(key in acdata)) {
             if (count > 4) {
-              console.log('timeout');
               return;
             }
             setTimeout(waitForAcData, 250);
@@ -533,7 +593,7 @@ function initHighLighter() {
             }
 
             var a, b, i;
-            currentFocus = 0;
+            currentFocus = -1;
             /*create a DIV element that will contain the items (values):*/
             a = document.createElement("DIV");
             a.setAttribute("id", el.id + "autocomplete-list");
@@ -571,22 +631,24 @@ function initHighLighter() {
                   /*insert the value for the autocomplete text field:*/
                   // inp.value = this.getElementsByTagName("input")[0].value;
                   e.stopPropagation();
-                  var replaceText = this.getElementsByTagName("input")[0].value;
-                  var type = this.getElementsByTagName("input")[0].getAttribute("data-type");
+                  let replaceText = this.getElementsByTagName("input")[0].value;
+                  const type = this.getElementsByTagName("input")[0].getAttribute("data-type");
                   if (type == "module" || type == "list" || type == "lpList" || type == "lpProp") {
                     replaceText = "'" + replaceText.replace("'", "''") + "'";
                   }
+
                   replaceWord(el, caretPos[0], replaceText);
 
                   /*close the list of autocompleted values,
                   (or any other open lists of autocompleted values:*/
                   closeAllLists();
+                  // throw new Error('test');
                 });
                 a.appendChild(b);
               }
             }
             if (a.firstElementChild != null) {
-              addActive(a.getElementsByTagName("div"));
+              // addActive(a.getElementsByTagName("div"));
             }
             updateFormatting(el.textContent);
             setSelectionRange(el, selection.start, selection.start);
@@ -611,8 +673,18 @@ function initHighLighter() {
       $(newTextarea).show();
     }
 
-    if (e.key != "Escape" && e.key != "Enter") {
-      $(oldTextarea)[0].dispatchEvent(new MouseEvent('dblclick', { bubbles: true }));
+    if (e.key != "Escape" && e.key != "Enter" && e.keyCode != 37 && e.keyCode != 38 && e.keyCode != 39 && e.keyCode != 40) {
+      if ((e.ctrlKey === true || e.metaKey === true)) {
+        if (e.keyCode == 86 || e.keyCode == 88) {
+          $(oldTextarea)[0].dispatchEvent(new MouseEvent('dblclick', {
+            bubbles: true
+          }));
+        }
+      } else {
+        $(oldTextarea)[0].dispatchEvent(new MouseEvent('dblclick', {
+          bubbles: true
+        }));
+      }
     }
 
     // auto complete
@@ -644,6 +716,17 @@ function initHighLighter() {
         addActive(x);
       } else if (e.keyCode == 13) {
         /*If the ENTER key is pressed, prevent the form from being submitted,*/
+        if (currentFocus > -1) {
+          e.preventDefault();
+          e.stopPropagation();
+          /*and simulate a click on the "active" item:*/
+          if (x) x[currentFocus].click();
+          return;
+        } else {
+          closeAllLists();
+        }
+      } else if (e.keyCode == 9) {
+        /*If the TAB key is pressed, prevent the form from being submitted,*/
         e.preventDefault();
         e.stopPropagation();
         if (currentFocus > -1) {
@@ -678,7 +761,11 @@ function initHighLighter() {
   $(document).keydown(function (e) {
     if (e.key === "Escape") {
       if ($(oldTextarea).length > 0) {
-        $(oldTextarea)[0].dispatchEvent(new KeyboardEvent('keydown', { bubbles: true, cancelable: true, keyCode: 27 }));
+        $(oldTextarea)[0].dispatchEvent(new KeyboardEvent('keydown', {
+          bubbles: true,
+          cancelable: true,
+          keyCode: 27
+        }));
         updateFormatting($(oldTextarea).val());
         return false;
       }
@@ -687,7 +774,9 @@ function initHighLighter() {
 
   // double click
   $(newTextarea).dblclick(function () {
-    $(oldTextarea)[0].dispatchEvent(new MouseEvent('dblclick', { bubbles: true }));
+    $(oldTextarea)[0].dispatchEvent(new MouseEvent('dblclick', {
+      bubbles: true
+    }));
   });
 
   //  click on validate or cancel
@@ -726,6 +815,7 @@ function initHighLighter() {
       x[i].classList.remove("autocomplete-active");
     }
   }
+
   function closeAllLists(elmnt) {
     /*close all autocomplete lists in the document,
     except the one passed as an argument:*/
@@ -775,14 +865,14 @@ function returnListName(text, caretPos) {
 function returnWord(text, caretPos) {
   if (text.length > caretPos && isLetter(text[caretPos])) return false;
   var preText = text.substring(0, caretPos);
-  var words = preText.split(/[\s\(\[\.\,:']/);
+  var words = preText.split(/[\s\(\[\.\,\+\-\*\/:']/);
   return words[words.length - 1]; //return last word
 }
 
 function replaceWord(element, caretPos, replaceText) {
   var text = element.textContent;
   var preText = text.substring(0, caretPos);
-  var n = preText.search(/[\s\(\[\.\,:']([^\s\(\[\.\,:']*$)/);
+  var n = preText.search(/[\s\(\[\.\,\+\-\*\/:']([^\s\(\[\.\,\+\-\*\/:']*$)/);
   element.textContent = text.substring(0, n + 1) + replaceText + text.substring(caretPos);
   caretPos = n + replaceText.length + 1;
   updateFormatting(element.textContent);
@@ -793,8 +883,10 @@ function replaceWord(element, caretPos, replaceText) {
 function getSelectionCoords(win) {
   win = win || window;
   var doc = win.document;
-  var sel = doc.selection, range, rects, rect;
-  var x = 0, y = 0;
+  var sel = doc.selection,
+    range, rects, rect;
+  var x = 0,
+    y = 0;
   if (sel) {
     if (sel.type != "Control") {
       range = sel.createRange();
@@ -835,5 +927,8 @@ function getSelectionCoords(win) {
       }
     }
   }
-  return { x: x, y: y };
+  return {
+    x: x,
+    y: y
+  };
 }
